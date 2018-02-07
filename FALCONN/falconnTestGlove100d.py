@@ -11,7 +11,7 @@ if __name__ == '__main__':
 
     number_of_queries = 2000
 
-    number_of_probes = 10000
+    number_of_probes = 20000
     number_of_tables = 120
 
     print('Reading the dataset')
