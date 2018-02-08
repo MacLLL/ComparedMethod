@@ -2,7 +2,7 @@ import falconn
 import numpy as np
 import timeit
 
-# This file is to test the performance of falconn on dataset Glove
+# This file is to test the performance of falconn on dataset Glove100d
 
 basePath = "/home/luy100/ForVLDB/ComparedMethod/Datasets"
 
@@ -11,8 +11,8 @@ if __name__ == '__main__':
 
     number_of_queries = 2000
 
-    number_of_probes = 20000
-    number_of_tables = 120
+    number_of_probes = 5000
+    number_of_tables = 180
 
     print('Reading the dataset')
     dataset = np.load(dataset_file_utl)

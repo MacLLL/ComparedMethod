@@ -17,8 +17,8 @@ if __name__ == '__main__':
 
     # distances=list(dataset_file[a_group_key[0]])
     neighbors = list(dataset_file[a_group_key[1]])
-    testDataset = np.array(list(dataset_file[a_group_key[2]]))
-    trainDataset = np.array(list(dataset_file[a_group_key[3]]))
+    testDataset = np.array(dataset_file[a_group_key[2]])
+    trainDataset = np.array(dataset_file[a_group_key[3]])
     print('Done')
 
     number_of_queries = 2000
