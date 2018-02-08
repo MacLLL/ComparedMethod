@@ -23,15 +23,16 @@ if __name__ == '__main__':
 
     number_of_queries = 2000
 
-    number_of_probes = 5000
-    number_of_tables = 40
+    number_of_probes = 2000
+    number_of_tables = 20
+    topk=10
 
     print('Generating queries')
     # np.random.seed(666666)
     # np.random.shuffle(trainDataset)
     queries = testDataset[:number_of_queries]
     npGroundTruth = np.array(neighbors)
-    groundTruth = npGroundTruth[:number_of_queries, :10]
+    groundTruth = npGroundTruth[:number_of_queries, :topk]
     print('Done')
 
     print('Centering the dataset and queries')
@@ -73,9 +74,9 @@ if __name__ == '__main__':
     score = 0.0
     t1 = timeit.default_timer()
     for (i, query) in enumerate(queries):
-        score += len(set(query_object.find_k_nearest_neighbors(query, 10)).intersection(set(groundTruth[i])))
+        score += len(set(query_object.find_k_nearest_neighbors(query, topk)).intersection(set(groundTruth[i])))
     t2 = timeit.default_timer()
     print('Query time: {} per query'.format((t2 - t1) * 1000 / float(
         len(queries))))
-    print("the recall is {}".format(score / 100.0 / float(len(queries))))
+    print("the recall is {}".format(score / topk / float(len(queries))))
 
