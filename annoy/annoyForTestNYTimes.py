@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     number_of_queries = 2000
 
-    number_of_trees = 60
+    number_of_trees = 20
     search_k = [1000,2000,4000,8000,16000,32000,64000,128000,256000]
     topk = 10
 
