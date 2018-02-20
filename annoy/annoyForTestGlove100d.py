@@ -4,7 +4,7 @@ import timeit
 import h5py
 import numpy as np
 
-# This file is to test the performance of falconn on dataset SIFT
+# This file is to test the performance of annoy on dataset glove100d
 
 basePath = "/home/luy100/ComparedMethod/Datasets"
 

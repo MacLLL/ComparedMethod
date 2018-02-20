@@ -1,10 +1,9 @@
-from annoy import AnnoyIndex
-import random
-import timeit
-import h5py
+import nmslib
 import numpy as np
+import h5py
+import timeit
 
-# This file is to test the performance of annoy on dataset SIFT
+# This file is to test the performance of hnsw on dataset SIFT
 
 basePath = "/home/luy100/ComparedMethod/Datasets"
 
@@ -23,8 +22,8 @@ if __name__ == '__main__':
 
     number_of_queries = 2000
 
-    number_of_trees = 120
-    search_k = [1000,2000,4000,8000,16000,32000,64000]
+    # number_of_trees = 120
+    # search_k = [1000, 2000, 4000, 8000, 16000, 32000, 64000]
     topk = 10
 
     print('Generating queries')
@@ -43,25 +42,26 @@ if __name__ == '__main__':
 
     print('Constructing the index')
     t1 = timeit.default_timer()
-    # set the parameters
-    dimension = len(trainDataset[0])
-    index = AnnoyIndex(dimension, 'angular')
-
-    for (i, object) in enumerate(trainDataset):
-        index.add_item(i, object)
-    index.build(number_of_trees)
+    # initialize a new index, using a HNSW index on Cosine Similarity
+    index = nmslib.init(method='hnsw', space='cosinesimil')
+    index.addDataPointBatch(trainDataset)
+    index.createIndex({'post': 2}, print_progress=False)
     t2 = timeit.default_timer()
     print('Done')
     print('Construction time: {}'.format((t2 - t1)))
 
     print("start querying")
-    for k in search_k:
-        score = 0.0
-        t1 = timeit.default_timer()
-        for (i, query) in enumerate(queries):
-            score += len(set(index.get_nns_by_vector(query, topk, search_k=k)).intersection(set(groundTruth[i])))
-        t2 = timeit.default_timer()
-        print("for search_k = {}".format(k))
-        print('Query time: {} per query'.format((t2 - t1) * 1000 / float(
-            len(queries))))
-        print("the recall is {}".format(score / topk / float(len(queries))))
+    score=0.0
+    t1 = timeit.default_timer()
+    # get all nearest neighbours for all the datapoint
+    # using a pool of 4 threads to compute
+    neighbors = index.knnQueryBatch(queries, k=topk, num_threads=4)
+    count =0
+
+    for (i, oneResult) in enumerate(neighbors):
+        score += len(set(oneResult[0]).intersection(set(groundTruth[i])))
+
+    t2 = timeit.default_timer()
+    print('Query time: {} per query'.format((t2 - t1) * 1000 / float(
+        len(queries))))
+    print("the recall is {}".format(score / topk / float(len(queries))))
