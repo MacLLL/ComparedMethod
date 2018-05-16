@@ -19,13 +19,18 @@ if __name__ == '__main__':
     trainDataset = np.array(dataset_file[a_group_key[3]])
     print('Done')
 
+    print('Normalizing the dataset')
+    trainDataset /= np.linalg.norm(trainDataset, axis=1).reshape(-1, 1)
+    print('Done')
+
     number_of_queries = 2000
 
     topk = 100
 
     print('Generating queries')
-    np.random.seed(666666)
-    np.random.shuffle(trainDataset)
+    # np.random.seed(666666)
+    # np.random.shuffle(trainDataset)
+    trainDataset=trainDataset[:100000]
     queries = trainDataset[:number_of_queries]
     # queries = testDataset[:number_of_queries]
     # npGroundTruth = np.array(neighbors)
@@ -39,7 +44,7 @@ if __name__ == '__main__':
     print('Done')
 
     ID = 0
-    with open(basePath + '/sift/sift-128d-DenseVector.txt', 'w') as thefile:
+    with open(basePath + '/sift/sift-128d-DenseVector-100k.txt', 'w') as thefile:
         for i in range(len(trainDataset)):
             values = []
             for item in range(len(trainDataset[i])):
@@ -50,11 +55,25 @@ if __name__ == '__main__':
             if ID % 10000 == 0:
                 print("%d vectors transfered" % ID)
 
+    # ID = 0
+    # with open(basePath + '/sift/sift-128d-SparseVector-100k.txt', 'w') as thefile:
+    #     for i in range(len(trainDataset)):
+    #         values = []
+    #         indices=[]
+    #         for item in range(len(trainDataset[i])):
+    #             values.append(trainDataset[i][item])
+    #             indices.append(item)
+    #         SparseVector = [ID, 128, indices, values]
+    #         thefile.write("%s\n" % SparseVector)
+    #         ID += 1
+    #         if ID % 10000 == 0:
+    #             print("%d vectors transfered" % ID)
+
     t1 = timeit.default_timer()
     ID = 0
-    with open(basePath + '/sift/sift-128-top100-2000queryGT', 'w') as thefile:
+    with open(basePath + '/sift/sift-128-top10-2000queryGT-100k', 'w') as thefile:
         for query in queries:
-            answers = np.dot(trainDataset, query).argsort()[-100:][::-1]
+            answers = np.dot(trainDataset, query).argsort()[-10:][::-1]
             answers = [x for x in answers]
             thefile.write("%s\n" % answers)
             ID += 1

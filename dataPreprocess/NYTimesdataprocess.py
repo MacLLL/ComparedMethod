@@ -17,6 +17,7 @@ if __name__ == '__main__':
     # neighbors = list(dataset_file[a_group_key[1]])
     # testDataset = np.array(dataset_file[a_group_key[2]])
     trainDataset = np.array(dataset_file[a_group_key[3]])
+
     print('Done')
 
     number_of_queries = 2000
@@ -24,8 +25,9 @@ if __name__ == '__main__':
     topk = 100
 
     print('Generating queries')
-    np.random.seed(666666)
-    np.random.shuffle(trainDataset)
+    # np.random.seed(666666)
+    # np.random.shuffle(trainDataset)
+    trainDataset=trainDataset[:290000]
     queries = trainDataset[:number_of_queries]
     # queries = testDataset[:number_of_queries]
     # npGroundTruth = np.array(neighbors)
@@ -39,7 +41,7 @@ if __name__ == '__main__':
     print('Done')
 
     ID = 0
-    with open(basePath + '/nytimes/nytimes-256d-DenseVector.txt', 'w') as thefile:
+    with open(basePath + '/nytimes/nytimes-256d-DenseVector-290k.txt', 'w') as thefile:
         for i in range(len(trainDataset)):
             values = []
             for item in range(len(trainDataset[i])):
@@ -52,7 +54,7 @@ if __name__ == '__main__':
 
     t1 = timeit.default_timer()
     ID = 0
-    with open(basePath + '/nytimes/nytimes-256-top100-2000queryGT', 'w') as thefile:
+    with open(basePath + '/nytimes/nytimes-256-top100-2000queryGT-290k', 'w') as thefile:
         for query in queries:
             answers = np.dot(trainDataset, query).argsort()[-100:][::-1]
             answers = [x for x in answers]

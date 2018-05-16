@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     number_of_queries = 2000
 
-    number_of_probes = 20000
+    number_of_probes = 80000
     number_of_tables = 60
 
     topk=10
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     params_cp.l = number_of_tables
     params_cp.num_rotations = 1
     params_cp.seed = 666666
-    params_cp.num_setup_threads = 4
+    params_cp.num_setup_threads = 1
     params_cp.storage_hash_table = falconn.StorageHashTable.BitPackedFlatHashTable
     falconn.compute_number_of_hash_functions(20, params_cp)
 

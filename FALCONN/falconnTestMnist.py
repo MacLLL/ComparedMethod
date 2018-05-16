@@ -8,7 +8,7 @@ import h5py
 basePath = "/home/luy100/ForVLDB/ComparedMethod/Datasets"
 
 if __name__ == '__main__':
-    dataset_file_utl = basePath + '/mnist/mnist-784-euclidean.hdf5'
+    dataset_file_utl = basePath + '/fmnist/fashion-mnist-784-euclidean.hdf5'
 
     print('Reading the dataset')
     dataset_file = h5py.File(dataset_file_utl, 'r')
@@ -23,10 +23,10 @@ if __name__ == '__main__':
 
     number_of_queries = 2000
 
-    number_of_probes = 6400
-    number_of_tables = 20
+    number_of_probes = [5,10,20,30,40,50,60,70,80,90,100]
+    number_of_tables = 5
 
-    topk=100
+    topk=10
 
     print('Generating queries')
     # np.random.seed(666666)
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     params_cp.l = number_of_tables
     params_cp.num_rotations = 2
     params_cp.seed = 666666
-    params_cp.num_setup_threads = 4
+    params_cp.num_setup_threads = 1
     params_cp.storage_hash_table = falconn.StorageHashTable.BitPackedFlatHashTable
     falconn.compute_number_of_hash_functions(16, params_cp)
 
@@ -63,20 +63,22 @@ if __name__ == '__main__':
     print('Done')
     print('Construction time: {}'.format((t2 - t1)))
 
-    query_object.set_num_probes(number_of_probes)
+    for num_p in number_of_probes:
+        query_object.set_num_probes(num_p)
+        print("num of probes {}".format(num_p))
 
     # print(groundTruth[0])
     # print(query_object.find_k_nearest_neighbors(queries[0],10))
 
 
-    score = 0.0
-    t1 = timeit.default_timer()
-    for (i, query) in enumerate(queries):
-        score += len(set(query_object.find_k_nearest_neighbors(query, topk)).intersection(set(groundTruth[i])))
-    t2 = timeit.default_timer()
-    print('Query time: {} per query'.format((t2 - t1) * 1000 / float(
-        len(queries))))
-    print("the recall is {}".format(score / topk / float(len(queries))))
+        score = 0.0
+        t1 = timeit.default_timer()
+        for (i, query) in enumerate(queries):
+            score += len(set(query_object.find_k_nearest_neighbors(query, topk)).intersection(set(groundTruth[i])))
+        t2 = timeit.default_timer()
+        print('Query time: {} per query'.format((t2 - t1) * 1000 / float(
+            len(queries))))
+        print("the recall is {}".format(score / topk / float(len(queries))))
 
 
 
